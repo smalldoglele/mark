@@ -1,9 +1,7 @@
 package com.zhongjinkehua.mark;
 
-import ch.qos.logback.classic.Level;
 import com.zhongjinkehua.mark.object.*;
 import org.jdbi.v3.core.Jdbi;
-import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
