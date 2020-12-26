@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超市选品页面</title>
+    <style>
+        h4 {text-align: center; margin-top: 20px !important;}
+        #tableShower { margin: 10px auto;width: 90%;}
+    </style>
+    <link rel="stylesheet" href="/css/jquery.table.css">
+    <link rel="stylesheet" href="/css/jquery.spinner.css">
+</head>
+<form action="" id="formSearch">
+
+</form>
+<h4>请选择你需要的商品和数量</h4>
+<div class="wrapper">
+    <table id="tableShower" class="tableShower">
+        <tr>
+            <th data-options="field:'categoryName'">商品分类</th>
+            <th data-options="field:'name'">商品名称</th>
+            <th data-options="field:'imgUrl',formatter:showImg">商品图片</th>
+            <th data-options="field:'price'">商品价格</th>
+            <th data-options="field:'unit'">单位</th>
+            <th data-options="field:'buyLimitStart'">起批量</th>
+            <th data-options="field:'id',checkbox:true" class="w60">是否订购</th>
+            <th data-options="field:'id',formatter:renderOrder" width="75">订购数量</th>
+            <th data-options="field:'id'">商品ID</th>
+            <th data-options="field:'code'">商品编号</th>
+        </tr>
+    </table>
+</div>
+<!--//
+<ul class="pagination">
+    <li><a href="#">«</a></li>
+    <li><a href="#">1</a></li>
+    <li><a class="active" href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">6</a></li>
+    <li><a href="#">7</a></li>
+    <li><a href="#">»</a></li>
+</ul>
+-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.table.js"></script>
+<script src="/js/jquery.spinner.js"></script>
+<script>
+    $(function () {
+
+        //表格展示
+        $("#formSearch").submit(function () {
+            $("#tableShower").table("load");
+            return false;
+        });
+        
+        $("#tableShower").table({
+            url: "/goods/list",
+            afterTableRender:function($table){
+                //渲染订购框
+                $('#tableShower .spinner').spinner({callback:function(dom,val){
+                    var id=$(dom).attr("id").split("-")[1];
+                    $.get("/goods/order",{id:id,qty:val},function(data){
+                        console.log(data);
+                    },"json");
+                 }});
+
+                var list = $table.data("data").list;
+                for(var i=0;i<list.length;++i){
+                    var r=list[i];
+                    $("#"+r.id).find(":checkbox:first").prop("checked",!!r.checkFlag);
+                }
+            }
+        });
+        $("#tableShower").on("click",".checkCls",function(){
+            var id = $(this).val();
+            var checkFlag=$(this).prop("checked")?1:0;
+            var qty=$("#order-"+id).val();
+            $.get("/goods/check",{goodsId:id,checkFlag:checkFlag,qty:qty},function(data){
+                console.log(data);
+            },"json");
+        });
+    });
+    /**
+     * 列表渲染操作列
+     * @returns {string}
+     */
+    function renderOperate(val, row) {
+        return '';
+    }
+    function showImg(val,row){
+        var origin="http://pc.sdhdb.366ec.net";
+        if(val==origin){
+            return '无图'
+        }else {
+            return '<img width="100" height="100" + src="'+val+'"/>';
+        }
+    }
+
+    function  renderOrder(val,row) {
+        var v=row.orderQty || row.buyLimitStart;
+        var minv=row.buyLimitStart;
+        return "<input id='order-"+row.id+"' type=\"text\" class=\"spinner\" data-min='"+minv+"' data-value='"+v+"'/>";
+    }
+
+</script>
+</body>
+</html>

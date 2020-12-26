@@ -1,0 +1,67 @@
+/** Table 表格样式 **/
+.tableShower {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #c6c6c6 !important;
+    margin-bottom: 20px;
+}
+
+.tableShower th {
+    border-collapse: collapse;
+    border-right: 1px solid #c6c6c6 !important;
+    border-bottom: 1px solid #c6c6c6 !important;
+    background-color: #ddeeff !important;
+    padding: 5px 9px;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.tableShower td {
+    border-collapse: collapse;
+    border-right: 1px solid #c6c6c6 !important;
+    border-bottom: 1px solid #c6c6c6 !important;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    word-break: break-all;
+    width: 105px;
+    height: 105px;
+}
+
+.tableShower tr:nth-child(odd) {
+    background-color: #fff !important;
+}
+
+.tableShower tr:nth-child(even) {
+    background-color: #f8f8f8 !important;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagination li {display: inline;}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    margin: 0 2px;
+}
+
+ul.pagination li a.active {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+
+ul.pagination li a:hover:not(.active) {background-color: #ddd;}
+
+div.center {text-align: center;}
