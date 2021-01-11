@@ -300,6 +300,7 @@
             var pagerArr = new Array();
             pagerArr.push('<div class="{0}">'.format("center"));
             pagerArr.push('<ul class="{0}">'.format(options.pagerClass));
+
             //渲染首页
             if (!pager.isFirstPage && pager.total)
                 pagerArr.push('<li><a href="javascript:;" data-pagenum="1" class="leftRadius" title="1">首页</a></li>');
@@ -329,12 +330,13 @@
                 pagerArr.push('<li><a href="javascript:;" data-pagenum="{0}"  title="下一页">»</a></li>'.format(pager.nextPage));
             //渲染尾页
             if (!pager.isLastPage && pager.total)
-                pagerArr.push('<li><a href="javascript:;" data-pagenum="{0}" class="rightRadius" title="{0}">尾页</a></li>'.format(pager.pages));
-            pagerArr.push('<li><a href="javascript:;" class="totalPage">共<font>{0}</font>页</a></li>'.format(pager.pages));
+                pagerArr.push('<li><a href="javascript:;" data-pagenum="{0}" class="rightRadius" title="共{0}页">尾页</a></li>'.format(pager.pages));
             if (options.enableGotoPage) {
                 pagerArr.push('<input type="text" class="goInput" size="2">');
                 pagerArr.push('<input type="button" class="goButton" value="GO" data-pagerange="{0},{1}">'.format(1, pager.pages));
             }
+            pagerArr.push('<li><a href="javascript:;" class="totalPage">共<font>{0}</font>条</a></li>'.format(pager.total));
+
             pagerArr.push('</ul>');
             pagerArr.push('</div>');
             return pagerArr.join('');
