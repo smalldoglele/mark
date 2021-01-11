@@ -7,15 +7,21 @@
     <style>
         h4 {text-align: center; margin-top: 20px !important;}
         #tableShower { margin: 10px auto;width: 90%;}
+        .wrapper{}
+        #formSearch{margin: 10px auto;width: 90%;}
     </style>
     <link rel="stylesheet" href="/css/jquery.table.css">
     <link rel="stylesheet" href="/css/jquery.spinner.css">
 </head>
-<form action="" id="formSearch">
-
-</form>
-<h4>请选择你需要的商品和数量</h4>
+<h4>销品商城日用百货选品平台</h4>
 <div class="wrapper">
+    <form action="" id="formSearch">
+        <label for="category_name">分类名称</label>
+        <select name="category_name" id="category_name">
+            <option value="">--请选择--</option>
+        </select>
+        <input type="submit" value="查询">
+    </form>
     <table id="tableShower" class="tableShower">
         <tr>
             <th data-options="field:'categoryName'">商品分类</th>
@@ -49,6 +55,17 @@
 <script src="/js/jquery.spinner.js"></script>
 <script>
     $(function () {
+        var categoryListUrl="/goods/category"
+        $.get(categoryListUrl,{},function (data) {
+            if(data.success) {
+                var res=data.data;
+                var arr = [];
+                for (var i = 0; i < res.length; i++) {
+                    arr.push(' <option value="' + res[i] + '">' + res[i] + '</option>');
+                }
+                $("#category_name").append(arr.join(''));
+            }
+        },"json");
 
         //表格展示
         $("#formSearch").submit(function () {

@@ -1,6 +1,7 @@
 package com.zhongjinkehua.mark;
 
 import com.zhongjinkehua.mark.object.*;
+import org.eclipse.jetty.util.StringUtil;
 import org.jdbi.v3.core.Jdbi;
 import spark.ModelAndView;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -22,22 +23,42 @@ public class App {
 
         get("/hello", (req, res) -> "Hello World");
 
+        get("goods/category", (req, res) -> {
+            List<String> categoryList = jdbi.withHandle(handle ->
+                    handle.createQuery("SELECT DISTINCT category_name FROM `goods`")
+                            .mapTo(String.class).list()
+            );
+
+            final QMap resultMap = new QMap();
+            resultMap.setSuccess(true);
+            resultMap.setData(categoryList);
+            return resultMap;
+        }, new JsonTransformer());
+
         get("goods/list", (req, res) -> {
             System.out.println(req.params());
             System.out.println(req.queryMap());
             Integer currentPage1 = Integer.parseInt(safeInt(req.queryMap("pageNum").value()));
             Integer pageSize1 = Integer.parseInt(safeInt(req.queryMap("pageSize").value()));
+            String categoryName = req.queryMap("category_name").value();
 
             final Integer pageSize = pageSize1 == 0 ? 10 : pageSize1;
             final Integer currentPage = currentPage1 < 1 ? 1 : currentPage1;
-
+            StringBuilder where=new StringBuilder(" where");
+            if(StringUtil.isNotBlank(categoryName)){
+                where.append(" category_name='"+categoryName+"'");
+            }
+            if(where.toString().equals(" where")){
+                where=new StringBuilder();
+            }
+            final String  whereSql=where.toString();
             Optional<Integer> totalCount = jdbi.withHandle(handle ->
-                    handle.createQuery("select count(*) from goods")
+                    handle.createQuery("select count(*) from goods"+whereSql)
                             .mapTo(Integer.class).findOne()
             );
 
             List<Goods> goodsList = jdbi.withHandle(handle ->
-                    handle.createQuery("select * from goods LIMIT ?,?")
+                    handle.createQuery("select * from goods "+whereSql+" LIMIT ?,?")
                             .bind(0, (currentPage - 1) * pageSize).bind(1, pageSize)
                             .mapToBean(Goods.class)
                             .list()
